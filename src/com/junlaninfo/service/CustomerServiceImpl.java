@@ -25,9 +25,11 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public List<Customer> findCustomerNoConnectDecidedzone() {
 		Session session = HibernateUtils.openSession();
-		String hql="from  customer where decidedZoneId is null";
+		Transaction transaction = session.beginTransaction();
+		String hql="from  Customer where decidedZoneId is null";
 		Query query = session.createQuery(hql);
 		List<Customer> customers = query.list();
+		transaction.commit();
 		session.close();
 		return customers;
 	}
@@ -39,12 +41,14 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public List<Customer> findCustomerConnectDecidedzone(String decidedZoneId) {
 		Session session = HibernateUtils.openSession();
-		String hql="from customer where decidedZoneId is ? ";   //设置占位符
+		Transaction transaction = session.beginTransaction();
+		String hql="from Customer where decidedZoneId is ? ";   //设置占位符
 		
 		Query query = session.createQuery(hql);
 		query.setString(0, decidedZoneId);   //定区的id值
 		
 		List<Customer> customers = query.list();
+		transaction.commit();
 		session.close();
 		return customers;
 	}
